@@ -18,6 +18,7 @@
 import json
 import logging
 from flask import jsonify
+from datetime import datetime, UTC
 
 import pwnagotchi.plugins as plugins
 import pwnagotchi.ui.fonts as fonts
@@ -27,7 +28,7 @@ from pwnagotchi.ui.view import BLACK
 
 class iPhoneGPS(plugins.Plugin):
     __author__ = "xentrify"
-    __version__ = "1.0.1"
+    __version__ = "1.0.2"
     __license__ = "GPL3"
     __description__ = "Saves GPS coordinates whenever an handshake is captured. Uses your iPhone's GPS via website requests and Shortcuts."
     # credits to:
@@ -54,6 +55,8 @@ class iPhoneGPS(plugins.Plugin):
                     cords["Latitude"] = float(request.args.get("lat"))
                     cords["Longitude"] = float(request.args.get("lon"))
                     cords["Altitude"] = float(request.args.get("alt").replace(",", "."))
+                    cords["Updated"] = datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%S.%f') 
+                    cords["Accuracy"] = 10 # Arbitrary value for 10 meters but mandatory for wigle plugin
                     self.coordinates = cords
                     logging.info(f"[iPhone-GPS] Updated coordinates to: ({cords})")
                     if self.stop:
